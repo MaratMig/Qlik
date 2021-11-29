@@ -6,7 +6,7 @@ import MessagesController from '../controllers/controller.message'
 
 const router = Router();
 
-router.get('/', MessagesController.getMessages)
+router.get('/messages', MessagesController.getMessages)
 
 router.get('/:messageId', MessagesController.getMessage)
 
