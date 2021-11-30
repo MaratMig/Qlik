@@ -2,6 +2,7 @@
 import { Request, Response,  NextFunction} from 'express';
 import { BaseMessage, Message } from '../models/message.interface'
 import * as MessageService from "../services/messages.service";
+import { validationResult } from 'express-validator/check';
 
 export class MessagesController {
 
@@ -40,20 +41,27 @@ export class MessagesController {
     }
 
     postMessage = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const message: BaseMessage = req.body;
-
-            const newMessage = await MessageService.create(message);
-
-            res.status(201).json(newMessage);
-          } catch (e) {
-            res.status(500).send(e.message);
-          }
+      const message: BaseMessage = req.body;
+      const errors = validationResult(req);
+      if ( !errors.isEmpty() ) {
+        const errMessage = 'Validation failed, entered data should be alphanumeric';
+        return res.status(422).json({message: errMessage, errors: errors.array()});
+      }
+      try {
+          const newMessage = await MessageService.create(message);
+          res.status(201).json(newMessage);
+        } catch (e) {
+          res.status(500).send(e.message);
+        }
     }
 
     putMessage = async (req: Request, res: Response, next: NextFunction) => {
         const id: number = parseInt(req.params.messageId, 10);
-
+        const errors = validationResult(req);
+        if ( !errors.isEmpty() ) {
+          const errMessage = 'Validation failed, entered data should be alphanumeric';
+          return res.status(422).json({message: errMessage, errors: errors.array()});
+        }
         try {
           const messageUpdate: Message = req.body;
 
