@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { Message } from '../models/message.interface'
+import { check } from 'express-validator/check'
 
 import MessagesController from '../controllers/controller.message'
 
@@ -10,9 +10,9 @@ router.get('/messages', MessagesController.getMessages)
 
 router.get('/:messageId', MessagesController.getMessage)
 
-router.post('/message', MessagesController.postMessage)
+router.post('/message', check('message').isAlphanumeric(), MessagesController.postMessage)
 
-router.put('/message/:messageId', MessagesController.putMessage)
+router.put('/message/:messageId',check('message').isAlphanumeric(), MessagesController.putMessage)
 
 router.delete('/message/:messageId', MessagesController.deleteMessage)
 
